@@ -1,15 +1,7 @@
 import Icon from '@/components/ui/icon';
+import type { Product } from '@/pages/Index';
 
 const HERO_IMG = 'https://cdn.ezst.app/projects/533ab341-c595-4c65-b083-297cde2247e7/files/a67050fc-d6d6-4df5-92f5-0e728fb75b26.jpg';
-
-type Product = {
-  id: number;
-  name: string;
-  category: string;
-  price: number;
-  tag: string;
-  img: string;
-};
 
 interface CatalogSectionProps {
   categories: string[];
@@ -17,9 +9,10 @@ interface CatalogSectionProps {
   setFilter: (v: string) => void;
   filtered: Product[];
   addToCart: (p: Product) => void;
+  loading: boolean;
 }
 
-export default function CatalogSection({ categories, filter, setFilter, filtered, addToCart }: CatalogSectionProps) {
+export default function CatalogSection({ categories, filter, setFilter, filtered, addToCart, loading }: CatalogSectionProps) {
   return (
     <div>
       <section className="relative h-[85vh] overflow-hidden">
@@ -76,40 +69,55 @@ export default function CatalogSection({ categories, filter, setFilter, filtered
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((p, i) => (
-            <div
-              key={p.id}
-              className="product-card bg-[#0f0f0f] border border-white/6 rounded overflow-hidden group animate-fade-in"
-              style={{ animationDelay: `${i * 0.07}s` }}
-            >
-              <div className="relative overflow-hidden aspect-[4/3]">
-                <img src={p.img} alt={p.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                {p.tag && (
-                  <span className="absolute top-3 left-3 px-2 py-0.5 neon-bg text-[#0a0a0a] text-[9px] font-bold tracking-widest rounded">
-                    {p.tag}
-                  </span>
-                )}
-                <button
-                  onClick={() => addToCart(p)}
-                  className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-[#0a0a0a]/80 backdrop-blur border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:border-cyan-400/50"
-                >
-                  <Icon name="Plus" size={16} className="text-white" />
-                </button>
-              </div>
-              <div className="p-5">
-                <p className="text-white/35 text-[10px] tracking-[0.3em] uppercase mb-1">{p.category}</p>
-                <h3 className="text-white/90 font-medium text-sm mb-3">{p.name}</h3>
-                <div className="flex items-center justify-between">
-                  <span className="neon-text font-display text-lg">${p.price.toLocaleString()}</span>
-                  <button onClick={() => addToCart(p)} className="btn-outline-neon px-3 py-1.5 rounded text-[10px]">
-                    Agregar
-                  </button>
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="bg-[#0f0f0f] border border-white/6 rounded overflow-hidden animate-pulse">
+                <div className="aspect-[4/3] bg-white/5" />
+                <div className="p-5 space-y-3">
+                  <div className="h-3 bg-white/5 rounded w-1/3" />
+                  <div className="h-4 bg-white/5 rounded w-3/4" />
+                  <div className="h-3 bg-white/5 rounded w-1/2" />
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map((p, i) => (
+              <div
+                key={p.id}
+                className="product-card bg-[#0f0f0f] border border-white/6 rounded overflow-hidden group animate-fade-in"
+                style={{ animationDelay: `${i * 0.07}s` }}
+              >
+                <div className="relative overflow-hidden aspect-[4/3]">
+                  <img src={p.img} alt={p.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  {p.tag && (
+                    <span className="absolute top-3 left-3 px-2 py-0.5 neon-bg text-[#0a0a0a] text-[9px] font-bold tracking-widest rounded">
+                      {p.tag}
+                    </span>
+                  )}
+                  <button
+                    onClick={() => addToCart(p)}
+                    className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-[#0a0a0a]/80 backdrop-blur border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:border-cyan-400/50"
+                  >
+                    <Icon name="Plus" size={16} className="text-white" />
+                  </button>
+                </div>
+                <div className="p-5">
+                  <p className="text-white/35 text-[10px] tracking-[0.3em] uppercase mb-1">{p.category}</p>
+                  <h3 className="text-white/90 font-medium text-sm mb-3">{p.name}</h3>
+                  <div className="flex items-center justify-between">
+                    <span className="neon-text font-display text-lg">${p.price.toLocaleString()}</span>
+                    <button onClick={() => addToCart(p)} className="btn-outline-neon px-3 py-1.5 rounded text-[10px]">
+                      Agregar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="border-y border-white/6 bg-[#0f0f0f]/50">

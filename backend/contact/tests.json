@@ -1,0 +1,13 @@
+{
+  "tests": [
+    {
+      "name": "Send contact message",
+      "method": "POST",
+      "path": "/",
+      "body": {"name": "Test User", "email": "test@luti.co", "message": "Hola, quiero información"},
+      "expectedStatus": 201,
+      "expectedBody": {"ok": true},
+      "bodyMatcher": "partial"
+    }
+  ]
+}
